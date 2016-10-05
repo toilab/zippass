@@ -7,39 +7,23 @@ import (
 	"log"
 	
 	"github.com/gin-gonic/gin"
-	// "github.com/comail/colog"
+	
+	"google.golang.org/appengine"
+    "google.golang.org/appengine/datastore"
 	
 	"entity"
-	
-	
+
+	"context"
 )
 
 // initialize
 func init() {
-	// set logger
-	
-	// SetLogger()
-	
+
 	// http.HandleFunc("/", handler)
 	http.Handle("/", GetMainEngine())
-	
-	// colog.Register()
-	// log.Printf("info: colog registered.")
+
 }
 
-/*
-func SetLogger() {
-	colog.SetDefaultLevel(colog.LDebug)
-	colog.SetMinLevel(colog.LTrace)
-	colog.SetFormatter(&colog.StdFormatter{
-		Colors:	true,
-		Flag:	log.Ldate | log.Ltime | log.Lshortfile,
-	})
-	colog.Register()
-	
-	log.Printf("info: colog registered.")
-}
-*/
 func GetMainEngine() *gin.Engine {
 	log.Printf("debug: start %s", "GetMainEngine")
 	router := gin.Default()
@@ -78,6 +62,23 @@ func TestPost(g *gin.Context) {
 
 func ZipPass(g *gin.Context) {
 	log.Printf("debug: start %s", "ZipPass")
+	ctx := appengine.NewContext(g.Request)
+	ids := AllocateID(ctx, "Pass")
+	k := datastore.NewKey(ctx, "Pass", ids, 0, nil)
+	pass := entity.PassInfo{}
+	pass.PassTypeId = "kakakakaka"
+	pass.SerialNumber = "ser_99"
 	
-	g.String(200, "Request is received.")
+	if _, err := datastore.Put(c, k, &pass); err != nil {
+		log.Fatalf("やばす：%v", err)
+		return err
+	}
+	
+	g.String(200, "Put success.")
+}
+
+// UniqueなIDを文字列で返してくれるいいやつ
+func AllocateID(c context.Context, kind string) (string, error) {
+    id, _, err := datastore.AllocateIDs(c, kind, nil, 1)
+    return fmt.Sprint(id), err
 }
