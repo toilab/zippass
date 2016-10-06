@@ -11,15 +11,14 @@ import (
 	"google.golang.org/appengine"
     "google.golang.org/appengine/datastore"
 	
-	"entity"
+	"github.com/vira0223/zippass/entity"
 
-	"context"
+	"golang.org/x/net/context"
 )
 
 // initialize
 func init() {
 
-	// http.HandleFunc("/", handler)
 	http.Handle("/", GetMainEngine())
 
 }
@@ -63,15 +62,20 @@ func TestPost(g *gin.Context) {
 func ZipPass(g *gin.Context) {
 	log.Printf("debug: start %s", "ZipPass")
 	ctx := appengine.NewContext(g.Request)
-	ids := AllocateID(ctx, "Pass")
+
+	ids, _ := AllocateID(ctx, "Pass")
+	log.Printf("debug: Allocated %s", ids)
+
 	k := datastore.NewKey(ctx, "Pass", ids, 0, nil)
+	log.Printf("debug: getDatastore %s", fmt.Sprint(k))
+
 	pass := entity.PassInfo{}
-	pass.PassTypeId = "kakakakaka"
+	pass.PassTypeID = "kakakakaka"
 	pass.SerialNumber = "ser_99"
 	
-	if _, err := datastore.Put(c, k, &pass); err != nil {
+	if _, err := datastore.Put(ctx, k, &pass); err != nil {
 		log.Fatalf("やばす：%v", err)
-		return err
+		return
 	}
 	
 	g.String(200, "Put success.")
