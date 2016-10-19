@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"time"
 )
 
 // Barcode情報
@@ -27,4 +26,3 @@ func NewBarcodeKeys(passId int, barcodeType string, altText string,
 	}
 	return ret
 }
-

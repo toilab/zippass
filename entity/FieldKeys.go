@@ -1,8 +1,6 @@
 package entity
 
 import (
-	"time"
-	"encoding/asn1"
 )
 
 
@@ -44,4 +42,3 @@ func NewFieldKeys(passId int, fieldType string, attributeValue string, changeMes
 	}
 	return ret
 }
-

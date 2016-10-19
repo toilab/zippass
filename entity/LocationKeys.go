@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"time"
 )
 
 // 地理情報機能情報
@@ -23,4 +22,3 @@ func NewLocation(altitude int64, latitude int64, longitude int64, relevantText s
 	}
 	return ret
 }
-
